@@ -1,5 +1,5 @@
-import { CONTENIDO_EBOOK } from "@/lib/data";
-import { ChevronRight, Video, Code2, GraduationCap, ArrowRight, Binary } from "lucide-react";
+import { getNivelesConUnidades } from "@/db/queries";
+import { ChevronRight, Video, Code2, ArrowRight, Binary } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -11,7 +11,12 @@ interface LevelCardProps {
     description: string;
 }
 
-export default function Home() {
+export default async function Home() {
+    // Obtener niveles desde la base de datos
+    const nivelesDB = await getNivelesConUnidades();
+
+    console.log("🏠 HOME PAGE - Niveles cargados:", nivelesDB);
+
     return (
         <div className="min-h-screen selection:bg-black/5 relative overflow-x-hidden hero-grid">
             {/* TECHNICAL BACKGROUND NOISE (Memory Addresses, etc.) */}
@@ -73,13 +78,13 @@ export default function Home() {
             {/* REFINED LEVELS GRID */}
             <main id="unidades" className="max-w-6xl mx-auto py-32 px-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-                    {CONTENIDO_EBOOK.map((nivel) => (
+                    {nivelesDB.map((nivel) => (
                         <LevelCard
                             key={nivel.slug}
-                            color={nivel.color}
+                            color={(nivel.color as "mint" | "gold" | "crimson") || "mint"}
                             titulo={nivel.titulo}
-                            description={nivel.descripcion}
-                            items={nivel.unidades.slice(0, 3).map(u => u.titulo)}
+                            description={nivel.descripcion || ""}
+                            items={nivel.unidades.slice(0, 3).map((u) => u.titulo)}
                             link={`/niveles/${nivel.slug}`}
                         />
                     ))}
