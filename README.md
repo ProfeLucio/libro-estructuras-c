@@ -10,7 +10,7 @@
 
 ---
 
-## 🎯 Descripción
+## Descripción
 
 Plataforma web moderna y premium que acompaña al libro **"Estructuras de Datos: Pensamiento algorítmico desde cero con C"**. Ofrece una experiencia de aprendizaje interactiva con videos, código fuente, y seguimiento de progreso.
 
