@@ -1,0 +1,70 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+        env:
+          DATABASE_URL: postgres://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ secrets.DB_NAME }}
+
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            # Navegar al directorio del proyecto
+            cd /var/www/ebook || exit 1
+            
+            # Detener la aplicación
+            pm2 stop ebook || true
+            
+            # Hacer pull de los últimos cambios
+            git pull origin main
+            
+            # Instalar dependencias
+            npm ci
+            
+            # Crear archivo .env.local con las variables de entorno
+            cat > .env.local << EOF
+            DB_USER=${{ secrets.DB_USER }}
+            DB_HOST=${{ secrets.DB_HOST }}
+            DB_NAME=${{ secrets.DB_NAME }}
+            DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            DB_PORT=${{ secrets.DB_PORT }}
+            DATABASE_URL=postgres://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ secrets.DB_NAME }}
+            PORT=3001
+            NODE_ENV=production
+            EOF
+            
+            # Sincronizar esquema de base de datos
+            npm run db:push
+            
+            # Build de la aplicación
+            npm run build
+            
+            # Reiniciar la aplicación con PM2
+            pm2 restart ebook || pm2 start npm --name "ebook" -- start
+            pm2 save
