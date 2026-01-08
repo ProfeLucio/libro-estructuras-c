@@ -161,7 +161,6 @@ export default async function UnitPage({ params }: { params: Promise<{ level: st
 
                         </div>
                     </div>
-
                     {/* SIDECAR DE NAVEGACIÓN PERSISTENTE */}
                     <aside className="hidden lg:block sticky top-24 space-y-10">
                         <div className="p-8 bg-white border border-black/5 shadow-sm rounded-lg">
