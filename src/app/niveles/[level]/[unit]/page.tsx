@@ -57,15 +57,12 @@ export default async function UnitPage({ params }: { params: Promise<{ level: st
                     orden: b.orden
                 };
 
-                if (b.tipo === "texto" || b.contenidoTexto) {
+                if (b.tipo === "texto") {
                     bloques.push({
                         ...bloqueBase,
-                        tipo: "texto",
                         contenido: b.contenidoTexto || ""
                     });
-                }
-
-                if (b.tipo === "video") {
+                } else if (b.tipo === "video") {
                     bloques.push({
                         ...bloqueBase,
                         videoUrl: b.urlRecurso || "",
@@ -77,14 +74,15 @@ export default async function UnitPage({ params }: { params: Promise<{ level: st
                         githubUrl: b.urlRecurso || ""
                     });
                 } else if (b.tipo === "codigo") {
+                    const code = b.codigoFuente || b.contenidoTexto || "";
                     bloques.push({
                         ...bloqueBase,
-                        codigo: b.codigoFuente || "",
-                        codeElement: b.codigoFuente ? (
+                        codigo: code,
+                        codeElement: code ? (
                             <Code
                                 lang="cpp"
                                 style={{ margin: 0, padding: 0, background: 'transparent' }}
-                                code={b.codigoFuente}
+                                code={code}
                             />
                         ) : null
                     });

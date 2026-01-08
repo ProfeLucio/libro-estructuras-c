@@ -90,8 +90,11 @@ export function UnitSection({ paso, index, color, isOpen, isDimmed, onToggle }: 
                     {paso.bloques?.map((bloque: any, i: number) => {
                         if (bloque.tipo === "texto") {
                             return (
-                                <p key={i} className={`text-slate-800 leading-relaxed text-2xl font-serif ${i === 0 ? 'first-letter:text-7xl first-letter:font-bold first-letter:mr-4 first-letter:float-left first-letter:leading-[0.7] first-letter:text-slate-900' : ''}`}>
-                                    {bloque.contenido}
+                                <p
+                                    key={i}
+                                    className={`text-slate-800 leading-relaxed text-2xl font-serif whitespace-pre-wrap ${i === 0 ? 'first-letter:text-7xl first-letter:font-bold first-letter:mr-4 first-letter:float-left first-letter:leading-[0.7] first-letter:text-slate-900' : ''}`}
+                                >
+                                    {bloque.contenido?.replace(/\\n/g, '\n')}
                                 </p>
                             );
                         }
