@@ -24,12 +24,17 @@ jobs:
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             nvm use 20
 
-            # 2. Instalar y Construir
+            # 2. Configurar variables de entorno (.env)
+            # Esto garantiza que el build de Next.js tenga acceso a la DB si lo necesita
+            echo "DATABASE_URL='${{ secrets.DATABASE_URL }}'" > .env
+            echo "NODE_ENV=production" >> .env
+            echo "PORT=3001" >> .env
+
+            # 3. Instalar y Construir
             npm install --force
             npm run build
 
-            # 3. Reiniciar con PM2 usando el comando de Next.js
-            # Borramos el proceso viejo para evitar que use 'serve' por error
+            # 4. Reiniciar con PM2
             pm2 delete estructura-datos || true
             pm2 start "npm run start -- -p 3001" --name "estructura-datos"
             pm2 save
