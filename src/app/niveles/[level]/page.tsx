@@ -1,12 +1,14 @@
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { CONTENIDO_EBOOK, getItemBySlugs } from "@/lib/data";
-import { ArrowRight, BookOpen } from "lucide-react";
+import { getItemBySlugs } from "@/lib/data";
+import { getNivelBySlug } from "@/db/queries";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 export async function generateMetadata({ params }: { params: Promise<{ level: string }> }) {
     const { level: levelSlug } = await params;
-    const { level } = getItemBySlugs(levelSlug);
+    const level = await getNivelBySlug(levelSlug);
+
     if (!level) return { title: "Nivel no encontrado" };
 
     return {
@@ -17,7 +19,11 @@ export async function generateMetadata({ params }: { params: Promise<{ level: st
 
 export default async function LevelPage({ params }: { params: Promise<{ level: string }> }) {
     const { level: levelSlug } = await params;
-    const { level } = getItemBySlugs(levelSlug);
+
+    const level = await getNivelBySlug(levelSlug);
+    if (level) {
+        console.log(`📑 LEVEL PAGE - Datos de DB para ${levelSlug}:`, level.unidades.length, "unidades");
+    }
 
     if (!level) {
         notFound();

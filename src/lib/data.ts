@@ -27,7 +27,7 @@ export const CONTENIDO_EBOOK: Nivel[] = [
     {
         slug: "nivel-basico",
         titulo: "Nivel Básico",
-        descripcion: "Fundamentos, lenguaje C y análisis de algoritmos.",
+        descripcion: "Fundamentos, lenguaje XC y análisis.",
         color: "mint",
         unidades: [
             {
@@ -190,7 +190,7 @@ int main(){
     {
         slug: "nivel-avanzado",
         titulo: "Nivel Avanzado",
-        descripcion: "Estructuras complejas y optimización.",
+        descripcion: "E complejas.",
         color: "crimson",
         unidades: [
             {

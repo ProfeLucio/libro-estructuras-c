@@ -1,7 +1,7 @@
 import { pgTable, text, timestamp, uuid, integer, serial, varchar, pgEnum } from "drizzle-orm/pg-core";
 
 // Enum para tipo de bloque
-export const tipoBloque = pgEnum("tipo_bloque", ["texto", "codigo", "video", "github"]);
+export const tipoBloque = pgEnum("tipo_bloque", ['texto', 'codigo', 'video', 'github', 'imagen']);
 
 // Tabla de Libros
 export const libros = pgTable("libros", {

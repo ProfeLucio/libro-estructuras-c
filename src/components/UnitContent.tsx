@@ -2,10 +2,8 @@
 
 import { useState } from "react";
 import { UnitSection } from "./UnitSection";
-import { Paso } from "@/lib/data";
-
 interface UnitContentProps {
-    steps: (Paso & { codeElement?: React.ReactNode })[];
+    steps: any[];
     levelColor: "mint" | "gold" | "crimson";
 }
 
@@ -17,7 +15,7 @@ export function UnitContent({ steps, levelColor }: UnitContentProps) {
     };
 
     return (
-        <div className="space-y-32">
+        <div className="space-y-8">
             {steps.map((paso, index) => {
                 const isActive = activeSectionId === paso.id;
                 // Si hay alguna sección activa y esta NO es la activa, entonces está "dimmed" (atenuada)
@@ -32,7 +30,6 @@ export function UnitContent({ steps, levelColor }: UnitContentProps) {
                         isOpen={isActive}
                         isDimmed={isDimmed} // Propiedad nueva
                         onToggle={() => handleToggle(paso.id)} // Control desde el padre
-                        codeNode={paso.codeElement} // Pasamos el nodo de código pre-renderizado
                     />
                 );
             })}
