@@ -11,21 +11,21 @@ interface LoadingScreenProps {
 export default function LoadingScreen({ isTransition = false, onFinished }: LoadingScreenProps) {
     const [isVisible, setIsVisible] = useState(true);
     const [progress, setProgress] = useState(0);
-    const [metadata, setMetadata] = useState("0x0042 INITIALIZING...");
+    const [metadata, setMetadata] = useState("0x0042 INICIALIZANDO...");
 
     useEffect(() => {
         const metadataSequences = isTransition ? [
-            "0x1337 REDIRECTING...",
-            "REBUILDING DOM...",
-            "CLEANING CACHE...",
-            "READY."
+            "0x1337 REDIRECCIONANDO...",
+            "RECONSTRUYENDO DOM...",
+            "LIMPIANDO CACHÉ...",
+            "LISTO."
         ] : [
-            "0x0042 INITIALIZING...",
-            "LOADING HEAP STRUCTURES...",
+            "0x0042 INICIALIZANDO...",
+            "CARGANDO ESTRUCTURAS HEAP...",
             "MALLOC(SIZEOF(NODE))...",
-            "MAPPING MEMORY ADDRESSES...",
-            "POINTER ALIGNMENT...",
-            "READY."
+            "MAPEANDO DIRECCIONES DE MEMORIA...",
+            "ALINEACIÓN DE PUNTEROS...",
+            "LISTO."
         ];
 
         let currentIndex = 0;

@@ -54,9 +54,9 @@ export default async function Home() {
                             <a href="#unidades" className="bg-slate-900 text-white px-12 py-6 rounded-sm shadow-2xl hover:bg-black transition-all flex items-center gap-4 group">
                                 EXPLORAR UNIDADES <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                             </a>
-                            <button className="border-2 border-slate-900/10 bg-white/40 text-slate-900 px-12 py-6 rounded-sm hover:bg-white/90 transition-all">
+                            <Link href="/guia" className="border-2 border-slate-900/10 bg-white/40 text-slate-900 px-12 py-6 rounded-sm hover:bg-white/90 transition-all flex items-center justify-center">
                                 GUÍA DEL LIBRO
-                            </button>
+                            </Link>
                         </div>
                     </div>
 
@@ -124,7 +124,7 @@ export default async function Home() {
                         </div>
 
                         <div className="flex flex-col gap-4">
-                            <div className="flex items-center gap-4 p-6 bg-white/50 border border-black/5 rounded-lg transition-all hover:bg-white hover:shadow-md group/item">
+                            <Link href="/videos" className="flex items-center gap-4 p-6 bg-white/50 border border-black/5 rounded-lg transition-all hover:bg-white hover:shadow-md group/item">
                                 <div className="p-3 bg-crimson/10 rounded-full text-crimson group-hover/item:bg-crimson group-hover/item:text-white transition-colors">
                                     <Video size={20} />
                                 </div>
@@ -132,7 +132,7 @@ export default async function Home() {
                                     <h4 className="text-sm font-bold text-slate-900 font-sans uppercase tracking-wider">Video Clases</h4>
                                     <p className="text-xs text-slate-500">Explicaciones visuales paso a paso.</p>
                                 </div>
-                            </div>
+                            </Link>
 
                             <div className="flex items-center gap-4 p-6 bg-white/50 border border-black/5 rounded-lg transition-all hover:bg-white hover:shadow-md group/item">
                                 <div className="p-3 bg-mint/10 rounded-full text-mint group-hover/item:bg-mint group-hover/item:text-white transition-colors">
@@ -184,7 +184,7 @@ export default async function Home() {
                         <h4 className="font-sans font-black text-[10px] text-slate-400 uppercase tracking-[0.2em]">Recursos</h4>
                         <ul className="space-y-4 font-medium text-slate-600 text-sm">
                             <li><a href="#" className="hover:text-slate-900 hover:translate-x-1 inline-block transition-all">Repositorio GitHub</a></li>
-                            <li><a href="#" className="hover:text-slate-900 hover:translate-x-1 inline-block transition-all">Video Clases</a></li>
+                            <li><Link href="/videos" className="hover:text-slate-900 hover:translate-x-1 inline-block transition-all">Video Clases</Link></li>
                             <li><a href="#" className="hover:text-slate-900 hover:translate-x-1 inline-block transition-all">Sobre el Autor</a></li>
                         </ul>
                     </div>
