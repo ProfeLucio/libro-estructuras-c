@@ -1,51 +1,40 @@
 name: Deploy Estructura de Datos (Next.js)
-
 on:
   push:
     branches: [ main ]
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout del código
         uses: actions/checkout@v3
 
-      - name: Deploy a VPS (SSH) y ejecutar como glucio
+      - name: Desplegar a VPS vía SSH
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}   # aquí debe ser: root
+          username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          port: 22
-          timeout: 60s
-          command_timeout: 30m
-          script_stop: true
-          debug: true
           script: |
-            set -e
+            cd /home/glucio/api-libros
+            git pull origin main
+            
+            # 1. Asegurar versión correcta de Node (v20)
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm use 20
 
-            sudo -u glucio bash -lc '
-              set -e
+            # 2. Configurar variables de entorno (.env)
+            # Esto garantiza que el build de Next.js tenga acceso a la DB si lo necesita
+            echo "DATABASE_URL='${{ secrets.DATABASE_URL }}'" > .env
+            echo "NODE_ENV=production" >> .env
+            echo "PORT=3001" >> .env
 
-              cd /home/glucio/api-libros
-              git pull origin main
+            # 3. Instalar y Construir
+            npm install --force
+            npm run build
 
-              export NVM_DIR="$HOME/.nvm"
-              [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-              nvm use 20
-
-              node -v
-              npm -v
-
-              echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
-              echo "NODE_ENV=production" >> .env
-              echo "PORT=3001" >> .env
-
-              npm install --force
-              npm run build
-
-              pm2 restart estructura-datos || pm2 start "npm run start -- -p 3001" --name "estructura-datos"
-              pm2 save
-            '
+            # 4. Reiniciar con PM2
+            pm2 delete estructura-datos || true
+            pm2 start "npm run start -- -p 3001" --name "estructura-datos"
+            pm2 save
