@@ -1,4 +1,5 @@
 name: Deploy Estructura de Datos (Next.js)
+
 on:
   push:
     branches: [ main ]
@@ -6,43 +7,45 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout del código
         uses: actions/checkout@v3
 
-      - name: Debug secrets presence (safe)
-        run: |
-          if [ -z "${{ secrets.SSH_USER }}" ]; then echo "SSH_USER is EMPTY"; else echo "SSH_USER is OK"; fi
-          if [ -z "${{ secrets.SSH_HOST }}" ]; then echo "SSH_HOST is EMPTY"; else echo "SSH_HOST is OK"; fi
-          if [ -z "${{ secrets.SSH_KEY }}" ]; then echo "SSH_KEY is EMPTY"; else echo "SSH_KEY is OK"; fi
-
-      - name: Desplegar a VPS vía SSH
+      - name: Deploy a VPS (SSH) y ejecutar como glucio
         uses: appleboy/ssh-action@v0.1.10
         with:
-          debug: true
-          script_stop: true
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}   # aquí debe ser: root
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
           timeout: 60s
           command_timeout: 30m
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
+          script_stop: true
+          debug: true
           script: |
             set -e
-            cd /home/glucio/api-libros
-            git pull origin main
 
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-            nvm use 20
-            node -v
-            npm -v
+            sudo -u glucio bash -lc '
+              set -e
 
-            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
-            echo "NODE_ENV=production" >> .env
-            echo "PORT=3001" >> .env
+              cd /home/glucio/api-libros
+              git pull origin main
 
-            npm install --force
-            npm run build
+              export NVM_DIR="$HOME/.nvm"
+              [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+              nvm use 20
 
-            pm2 restart estructura-datos || pm2 start "npm run start -- -p 3001" --name "estructura-datos"
-            pm2 save
+              node -v
+              npm -v
+
+              echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
+              echo "NODE_ENV=production" >> .env
+              echo "PORT=3001" >> .env
+
+              npm install --force
+              npm run build
+
+              pm2 restart estructura-datos || pm2 start "npm run start -- -p 3001" --name "estructura-datos"
+              pm2 save
+            '
