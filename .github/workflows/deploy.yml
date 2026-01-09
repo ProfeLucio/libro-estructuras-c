@@ -12,9 +12,9 @@ jobs:
 
       - name: Debug secrets presence (safe)
         run: |
-          if [ -z "${{ secrets.SSH_USER }}" ]; then echo "SSH_USER is EMPTY"; else echo "SSH_USER is SET"; fi
-          if [ -z "${{ secrets.SSH_HOST }}" ]; then echo "SSH_HOST is EMPTY"; else echo "SSH_HOST is SET"; fi
-          if [ -z "${{ secrets.SSH_KEY }}" ]; then echo "SSH_KEY is EMPTY"; else echo "SSH_KEY is SET"; fi
+          if [ -z "${{ secrets.SSH_USER }}" ]; then echo "SSH_USER is EMPTY"; else echo "SSH_USER is OK"; fi
+          if [ -z "${{ secrets.SSH_HOST }}" ]; then echo "SSH_HOST is EMPTY"; else echo "SSH_HOST is OK"; fi
+          if [ -z "${{ secrets.SSH_KEY }}" ]; then echo "SSH_KEY is EMPTY"; else echo "SSH_KEY is OK"; fi
 
       - name: Desplegar a VPS vía SSH
         uses: appleboy/ssh-action@v0.1.10
