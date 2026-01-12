@@ -25,17 +25,23 @@ jobs:
             nvm use 20
 
             # 2. Configurar variables de entorno (.env)
-            # Esto garantiza que el build de Next.js tenga acceso a la DB si lo necesita
             echo "DATABASE_URL='${{ secrets.DATABASE_URL }}'" > .env
             echo "NODE_ENV=production" >> .env
-            echo "PORT=3000" >> .env
+            echo "PORT=3001" >> .env
             echo "NEXT_PUBLIC_SITE_URL=https://estructuras-datos.gonzaloandreslucio.com" >> .env
 
-            # 3. Instalar y Construir
+            # 3. Limpiar procesos zombie y puertos ocupados
+            pm2 delete estructura-datos || true
+            fuser -k 3001/tcp || true
+            fuser -k 3000/tcp || true
+
+            # 4. Instalar y arreglar permisos (CRITICO)
             npm install --force
+            chmod +x node_modules/.bin/* || true
+            
+            # 5. Build
             npm run build
 
-            # 4. Reiniciar con PM2
-            pm2 delete estructura-datos || true
-            pm2 start "npm run start -- -p 3000" --name "estructura-datos"
+            # 6. Iniciar con PM2 (forcer puerto 3001)
+            pm2 start "npm run start -- -p 3001" --name "estructura-datos"
             pm2 save
