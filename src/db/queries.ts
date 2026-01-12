@@ -2,6 +2,20 @@ import { db } from "./index";
 import { libros, niveles, unidades, pasos, bloquesContenido } from "./schema";
 import { eq, and } from "drizzle-orm";
 
+// Obtener solo la información básica de los niveles (para sitemap y menús)
+export async function getNivelesSimplificados() {
+    try {
+        const nivelesData = await db
+            .select()
+            .from(niveles)
+            .orderBy(niveles.orden);
+        return nivelesData;
+    } catch (error) {
+        console.error("❌ Error al obtener niveles simplificados:", error);
+        throw error;
+    }
+}
+
 // Obtener todos los niveles con sus unidades
 export async function getNivelesConUnidades() {
     try {

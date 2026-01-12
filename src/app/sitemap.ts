@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next'
-import { getNivelesConUnidades } from '@/db/queries'
+import { getNivelesSimplificados } from '@/db/queries'
 import { SITE_CONFIG } from '@/lib/constants'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -21,7 +21,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     // Dynamic routes (Niveles)
     try {
-        const niveles = await getNivelesConUnidades()
+        const niveles = await getNivelesSimplificados()
         const levelRoutes = niveles.map((nivel) => ({
             url: `${baseUrl}/niveles/${nivel.slug}`,
             lastModified: new Date(),
