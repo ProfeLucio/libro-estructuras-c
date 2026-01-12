@@ -221,6 +221,7 @@ export async function getAllVideos() {
                 pasoOrden: pasos.orden,
                 videoUrl: bloquesContenido.urlRecurso,
                 videoTitulo: bloquesContenido.tituloRecurso,
+                videoSlug: bloquesContenido.slug,
                 videoOrden: bloquesContenido.orden,
             })
             .from(bloquesContenido)
