@@ -29,6 +29,7 @@ jobs:
             echo "DATABASE_URL='${{ secrets.DATABASE_URL }}'" > .env
             echo "NODE_ENV=production" >> .env
             echo "PORT=3000" >> .env
+            echo "NEXT_PUBLIC_SITE_URL=https://estructuras-datos.gonzaloandreslucio.com" >> .env
 
             # 3. Instalar y Construir
             npm install --force
