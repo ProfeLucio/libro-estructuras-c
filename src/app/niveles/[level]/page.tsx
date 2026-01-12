@@ -4,6 +4,8 @@ import { getNivelBySlug } from "@/db/queries";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import JsonLd from "@/components/JsonLd";
+import { SITE_CONFIG } from "@/lib/constants";
 
 export async function generateMetadata({ params }: { params: Promise<{ level: string }> }) {
     const { level: levelSlug } = await params;
@@ -49,6 +51,22 @@ export default async function LevelPage({ params }: { params: Promise<{ level: s
 
     return (
         <div className="min-h-screen relative overflow-hidden bg-[#faf9f6]">
+            <JsonLd data={{
+                "@context": "https://schema.org",
+                "@type": "Course",
+                "name": level.titulo,
+                "description": level.descripcion,
+                "provider": {
+                    "@type": "Person",
+                    "name": SITE_CONFIG.author.name,
+                    "url": SITE_CONFIG.author.web
+                },
+                "hasCourseInstance": {
+                    "@type": "CourseInstance",
+                    "courseMode": "online",
+                    "courseWorkload": "Self-paced"
+                }
+            }} />
             <div className={`min-h-[35vh] ${tintColors[level.color as keyof typeof tintColors]} px-6 pt-24 pb-12 border-b border-black/5`}>
                 <div className="max-w-6xl mx-auto relative z-10">
                     <Breadcrumbs items={[

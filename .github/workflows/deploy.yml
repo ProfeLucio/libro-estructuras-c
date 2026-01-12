@@ -36,5 +36,5 @@ jobs:
 
             # 4. Reiniciar con PM2
             pm2 delete estructura-datos || true
-            pm2 start "npm run start -- -p 3001" --name "estructura-datos"
+            pm2 start "npm run start -- -p 3000" --name "estructura-datos"
             pm2 save

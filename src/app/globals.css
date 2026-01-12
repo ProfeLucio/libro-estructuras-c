@@ -132,7 +132,31 @@ body::before {
 }
 
 @keyframes drawLine {
+  from {
+    transform: scaleX(0);
+  }
+
   to {
     transform: scaleX(1);
   }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+.title-inked {
+  font-family: var(--font-serif);
+  position: relative;
+  display: inline-block;
+}
+
+.title-inked::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='100%25' height='100%25' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' distinct='true'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.15'/%3E%3C/svg%3E");
+  opacity: 0.5;
+  pointer-events: none;
+  mix-blend-mode: overlay;
 }

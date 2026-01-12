@@ -228,3 +228,83 @@ export async function getAllVideos() {
         throw error;
     }
 }
+
+// Obtener un video específico por su slug
+export async function getVideoBySlug(slug: string) {
+    try {
+        const result = await db
+            .select({
+                nivelId: niveles.id,
+                nivelTitulo: niveles.titulo,
+                nivelColor: niveles.color,
+                nivelSlug: niveles.slug,
+                unidadId: unidades.id,
+                unidadTitulo: unidades.titulo,
+                unidadNumero: unidades.numero,
+                unidadSlug: unidades.slug,
+                pasoId: pasos.id,
+                pasoTitulo: pasos.titulo,
+                videoUrl: bloquesContenido.urlRecurso,
+                videoTitulo: bloquesContenido.tituloRecurso,
+                contenidoTexto: bloquesContenido.contenidoTexto,
+            })
+            .from(bloquesContenido)
+            .innerJoin(pasos, eq(bloquesContenido.pasoId, pasos.id))
+            .innerJoin(unidades, eq(pasos.unidadId, unidades.id))
+            .innerJoin(niveles, eq(unidades.nivelId, niveles.id))
+            .where(
+                and(
+                    eq(bloquesContenido.slug, slug),
+                    eq(bloquesContenido.tipo, "video")
+                )
+            )
+            .limit(1);
+
+        return result[0] || null;
+    } catch (error) {
+        console.error("❌ Error al obtener video por slug:", error);
+        throw error;
+    }
+}
+
+// Obtener todos los bloques de tipo github agrupados por nivel y unidad
+export async function getAllGithubBlocks() {
+    try {
+        const result = await db
+            .select({
+                nivelId: niveles.id,
+                nivelTitulo: niveles.titulo,
+                nivelColor: niveles.color,
+                nivelOrden: niveles.orden,
+                nivelSlug: niveles.slug,
+                unidadId: unidades.id,
+                unidadTitulo: unidades.titulo,
+                unidadNumero: unidades.numero,
+                unidadOrden: unidades.orden,
+                unidadSlug: unidades.slug,
+                pasoId: pasos.id,
+                pasoTitulo: pasos.titulo,
+                pasoOrden: pasos.orden,
+                repoUrl: bloquesContenido.urlRecurso,
+                repoTitulo: bloquesContenido.tituloRecurso,
+                repoOrden: bloquesContenido.orden,
+            })
+            .from(bloquesContenido)
+            .innerJoin(pasos, eq(bloquesContenido.pasoId, pasos.id))
+            .innerJoin(unidades, eq(pasos.unidadId, unidades.id))
+            .innerJoin(niveles, eq(unidades.nivelId, niveles.id))
+            .where(eq(bloquesContenido.tipo, "github"))
+            .orderBy(
+                niveles.orden,
+                unidades.orden,
+                pasos.orden,
+                bloquesContenido.orden
+            );
+
+        console.log("🐙 Repositorios obtenidos:", result.length);
+        return result;
+    } catch (error) {
+        console.error("❌ Error al obtener repositorios:", error);
+        throw error;
+    }
+}
