@@ -1,17 +1,56 @@
 export const SITE_CONFIG = {
     name: "Estructuras de Datos | Pensamiento Algorítmico",
+    shortName: "Estructuras de Datos",
     description: "Web de apoyo multimedia para el libro de Estructuras de Datos de Gonzalo Lucio. Aprende C, algoritmos y estructuras de datos con recursos visuales y prácticos.",
     url: process.env.NEXT_PUBLIC_SITE_URL || "https://estructuras-datos.gonzaloandreslucio.com",
     ogImage: "/images/og-image.jpg",
+    locale: "es_CO",
+    inLanguage: "es",
     links: {
         twitter: "https://twitter.com/gonzaloluncio",
         github: "https://github.com/gonzalolucio",
     },
     author: {
         name: "Gonzalo Andrés Lucio",
-        web: "https://gonzalolucio.com" // Placeholder
+        givenName: "Gonzalo Andrés",
+        familyName: "Lucio",
+        web: "https://gonzalolucio.com",
+        image: "/images/autor.webp",
+        jobTitle: "Docente Universitario e Ingeniero de Sistemas",
+        description: "Ingeniero de Sistemas, Desarrollador Fullstack y Docente Universitario con más de 20 años de experiencia en el sector educativo. Investigador del grupo Gi2T.",
+        alumniOf: "Universidad",
+        affiliation: "Gi2T Research Group",
+        knowsAbout: [
+            "Estructuras de Datos",
+            "Algoritmos",
+            "Programación en C",
+            "Ingeniería de Software",
+            "Desarrollo Fullstack",
+        ],
+        sameAs: [
+            "https://twitter.com/gonzaloluncio",
+            "https://github.com/gonzalolucio",
+        ],
     },
-    isbn: "978-XX-XXXX-XX-X", // Placeholder
+    book: {
+        isbn: "978-XX-XXXX-XX-X",
+        genre: "Computer Science",
+        topics: [
+            "Estructuras de Datos",
+            "Algoritmos",
+            "Programación en C",
+            "Listas enlazadas",
+            "Árboles binarios",
+            "Pilas y Colas",
+            "Tablas Hash",
+            "Grafos",
+            "Recursividad",
+            "Complejidad algorítmica",
+        ],
+        educationalLevel: "Educación Superior",
+        educationalUse: "Enseñanza y aprendizaje",
+        audience: "Estudiantes de Ingeniería de Sistemas",
+    },
 }
 
 export type SiteConfig = typeof SITE_CONFIG;

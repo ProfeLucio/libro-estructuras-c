@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { getVideoBySlug } from "@/db/queries";
 import Link from "next/link";
 import { ArrowLeft, Play, Download, BookOpen } from "lucide-react";
+import JsonLd from "@/components/JsonLd";
+import { SITE_CONFIG } from "@/lib/constants";
 
 interface PageProps {
     params: Promise<{
@@ -32,9 +34,19 @@ export async function generateMetadata({ params }: PageProps) {
     const video = await getVideoBySlug(slug);
     if (!video) return { title: "Video no encontrado" };
 
+    const title = `${video.videoTitulo || video.pasoTitulo} | Estructuras de Datos`;
+    const description = `Video lección del ${video.nivelTitulo}, Unidad ${video.unidadNumero}: ${video.unidadTitulo}. Aprende ${video.pasoTitulo} con Gonzalo Andrés Lucio.`;
+
     return {
-        title: `${video.videoTitulo || video.pasoTitulo} | Estructuras de Datos`,
-        description: `Video lección del Nivel ${video.nivelTitulo}, Unidad ${video.unidadNumero}: ${video.unidadTitulo}.`,
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+            type: "video.other",
+            url: `${SITE_CONFIG.url}/video/${slug}`,
+            videos: video.videoUrl ? [{ url: video.videoUrl }] : undefined,
+        },
     };
 }
 
@@ -54,8 +66,53 @@ export default async function VideoPage({ params }: PageProps) {
         return `https://www.youtube.com/embed/${videoId}?autoplay=0`;
     };
 
+    const getYouTubeVideoId = (url: string | null) => {
+        if (!url) return null;
+        return url.split("v=")[1]?.split("&")[0] || url.split("/").pop() || null;
+    };
+
+    const youtubeId = getYouTubeVideoId(video.videoUrl ?? null);
+    const videoTitle = video.videoTitulo || video.pasoTitulo;
+    const videoDescription = `Video lección del ${video.nivelTitulo}, Unidad ${video.unidadNumero}: ${video.unidadTitulo}. ${videoTitle}.`;
+
     return (
         <div className="min-h-screen bg-[#faf9f6] relative overflow-x-hidden selection:bg-black/5">
+            <JsonLd data={[
+                {
+                    "@type": "VideoObject",
+                    "@id": `${SITE_CONFIG.url}/video/${slug}`,
+                    "name": videoTitle,
+                    "description": videoDescription,
+                    "url": `${SITE_CONFIG.url}/video/${slug}`,
+                    "inLanguage": SITE_CONFIG.inLanguage,
+                    "embedUrl": youtubeId ? `https://www.youtube.com/embed/${youtubeId}` : undefined,
+                    "thumbnailUrl": youtubeId
+                        ? `https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`
+                        : `${SITE_CONFIG.url}${SITE_CONFIG.ogImage}`,
+                    "uploadDate": "2026-01-01",
+                    "author": { "@id": `${SITE_CONFIG.url}/#author` },
+                    "publisher": { "@id": `${SITE_CONFIG.url}/#author` },
+                    "isPartOf": {
+                        "@type": "Course",
+                        "name": video.unidadTitulo,
+                        "url": `${SITE_CONFIG.url}/niveles/${video.nivelSlug}/${video.unidadSlug}`,
+                    },
+                    "about": {
+                        "@type": "Thing",
+                        "name": "Estructuras de Datos",
+                    }
+                },
+                {
+                    "@type": "BreadcrumbList",
+                    "itemListElement": [
+                        { "@type": "ListItem", "position": 1, "name": "Inicio", "item": SITE_CONFIG.url },
+                        { "@type": "ListItem", "position": 2, "name": "Videos", "item": `${SITE_CONFIG.url}/videos` },
+                        { "@type": "ListItem", "position": 3, "name": video.nivelTitulo, "item": `${SITE_CONFIG.url}/niveles/${video.nivelSlug}` },
+                        { "@type": "ListItem", "position": 4, "name": video.unidadTitulo, "item": `${SITE_CONFIG.url}/niveles/${video.nivelSlug}/${video.unidadSlug}` },
+                        { "@type": "ListItem", "position": 5, "name": videoTitle, "item": `${SITE_CONFIG.url}/video/${slug}` },
+                    ]
+                }
+            ]} />
             {/* TECHNICAL BACKGROUND NOISE */}
             <div className="absolute inset-0 pointer-events-none opacity-[0.03] select-none font-sans font-bold text-[10px] tracking-tight">
                 <div className="absolute top-20 left-10 noise-label rotate-12">0x7ffe-stack</div>

@@ -4,8 +4,8 @@ import JsonLd from "@/components/JsonLd";
 import { SITE_CONFIG } from "@/lib/constants";
 
 export const metadata = {
-    title: "Sobre el Autor | Estructuras de Datos",
-    description: "Perfil profesional y académico de Gonzalo Andrés Lucio.",
+    title: "Gonzalo Andrés Lucio — Autor | Estructuras de Datos",
+    description: "Perfil profesional y académico de Gonzalo Andrés Lucio, Ingeniero de Sistemas, Docente Universitario con más de 20 años de experiencia e investigador del grupo Gi2T.",
 };
 
 export default function AuthorPage() {
@@ -19,22 +19,56 @@ export default function AuthorPage() {
             </div>
 
             <div className="max-w-5xl mx-auto px-6 pt-24 pb-32 relative z-10">
-                <JsonLd data={{
-                    "@context": "https://schema.org",
-                    "@type": "Person",
-                    "name": SITE_CONFIG.author.name,
-                    "jobTitle": "Professor & Software Engineer",
-                    "url": SITE_CONFIG.author.web,
-                    "sameAs": [
-                        SITE_CONFIG.links.twitter,
-                        SITE_CONFIG.links.github,
-                        // Add other social links if available
-                    ],
-                    "worksFor": {
-                        "@type": "Organization",
-                        "name": "Gi2T Research Group"
+                <JsonLd data={[
+                    {
+                        "@type": "Person",
+                        "@id": `${SITE_CONFIG.url}/#author`,
+                        "name": SITE_CONFIG.author.name,
+                        "givenName": SITE_CONFIG.author.givenName,
+                        "familyName": SITE_CONFIG.author.familyName,
+                        "url": `${SITE_CONFIG.url}/autor`,
+                        "image": {
+                            "@type": "ImageObject",
+                            "url": `${SITE_CONFIG.url}${SITE_CONFIG.author.image}`,
+                            "width": 400,
+                            "height": 400
+                        },
+                        "jobTitle": SITE_CONFIG.author.jobTitle,
+                        "description": SITE_CONFIG.author.description,
+                        "knowsAbout": SITE_CONFIG.author.knowsAbout,
+                        "sameAs": SITE_CONFIG.author.sameAs,
+                        "affiliation": {
+                            "@type": "Organization",
+                            "name": SITE_CONFIG.author.affiliation
+                        },
+                        "hasOccupation": {
+                            "@type": "Occupation",
+                            "name": "Docente Universitario",
+                            "occupationalCategory": "2310",
+                            "skills": SITE_CONFIG.author.knowsAbout.join(", ")
+                        },
+                        "author": [{
+                            "@type": "Book",
+                            "@id": `${SITE_CONFIG.url}/#book`,
+                            "name": SITE_CONFIG.shortName,
+                            "url": SITE_CONFIG.url
+                        }]
+                    },
+                    {
+                        "@type": "ProfilePage",
+                        "url": `${SITE_CONFIG.url}/autor`,
+                        "name": `${SITE_CONFIG.author.name} — Autor`,
+                        "description": SITE_CONFIG.author.description,
+                        "mainEntity": { "@id": `${SITE_CONFIG.url}/#author` },
+                        "breadcrumb": {
+                            "@type": "BreadcrumbList",
+                            "itemListElement": [
+                                { "@type": "ListItem", "position": 1, "name": "Inicio", "item": SITE_CONFIG.url },
+                                { "@type": "ListItem", "position": 2, "name": "Autor", "item": `${SITE_CONFIG.url}/autor` },
+                            ]
+                        }
                     }
-                }} />
+                ]} />
                 {/* Header */}
                 <header className="mb-20">
                     <Link

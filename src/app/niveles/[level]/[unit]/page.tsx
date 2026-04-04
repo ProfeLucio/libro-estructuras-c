@@ -5,6 +5,8 @@ import { ChevronLeft } from "lucide-react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Code } from "bright";
+import JsonLd from "@/components/JsonLd";
+import { SITE_CONFIG } from "@/lib/constants";
 
 export async function generateMetadata({ params }: { params: Promise<{ level: string, unit: string }> }) {
     const { level: levelSlug, unit: unitSlug } = await params;
@@ -122,6 +124,30 @@ export default async function UnitPage({ params }: { params: Promise<{ level: st
 
     return (
         <div className="min-h-screen relative overflow-hidden bg-[#faf9f6]">
+            <JsonLd data={[
+                {
+                    "@type": "LearningResource",
+                    "@id": `${SITE_CONFIG.url}/niveles/${level.slug}/${unit.slug}`,
+                    "name": unit.titulo,
+                    "description": (unit as any).descripcion || unit.titulo,
+                    "url": `${SITE_CONFIG.url}/niveles/${level.slug}/${unit.slug}`,
+                    "inLanguage": SITE_CONFIG.inLanguage,
+                    "educationalLevel": SITE_CONFIG.book.educationalLevel,
+                    "learningResourceType": "lesson",
+                    "teaches": unit.titulo,
+                    "isPartOf": { "@id": `${SITE_CONFIG.url}/niveles/${level.slug}` },
+                    "author": { "@id": `${SITE_CONFIG.url}/#author` },
+                    "position": unit.orden,
+                },
+                {
+                    "@type": "BreadcrumbList",
+                    "itemListElement": [
+                        { "@type": "ListItem", "position": 1, "name": "Inicio", "item": SITE_CONFIG.url },
+                        { "@type": "ListItem", "position": 2, "name": level.titulo, "item": `${SITE_CONFIG.url}/niveles/${level.slug}` },
+                        { "@type": "ListItem", "position": 3, "name": unit.titulo, "item": `${SITE_CONFIG.url}/niveles/${level.slug}/${unit.slug}` },
+                    ]
+                }
+            ]} />
             {/* TAG DE COLOR SUTIL AL TOPE */}
             <div className={`absolute top-0 right-12 w-16 h-1 ${accentColors[levelColor]} opacity-60`} />
 

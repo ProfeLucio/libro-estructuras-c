@@ -2,6 +2,8 @@ import { getNivelesConUnidades } from "@/db/queries";
 import { ChevronRight, Video, Code2, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import JsonLd from "@/components/JsonLd";
+import { SITE_CONFIG } from "@/lib/constants";
 
 interface LevelCardProps {
     titulo: string;
@@ -17,8 +19,52 @@ export default async function Home() {
 
     console.log("🏠 HOME PAGE - Niveles cargados:", nivelesDB);
 
+    const courseItems = nivelesDB.map((nivel, index) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "item": {
+            "@type": "Course",
+            "@id": `${SITE_CONFIG.url}/niveles/${nivel.slug}`,
+            "name": nivel.titulo,
+            "description": nivel.descripcion || nivel.titulo,
+            "url": `${SITE_CONFIG.url}/niveles/${nivel.slug}`,
+            "provider": { "@id": `${SITE_CONFIG.url}/#author` },
+            "isPartOf": { "@id": `${SITE_CONFIG.url}/#book` },
+            "hasPart": nivel.unidades.map((u) => ({
+                "@type": "Course",
+                "name": u.titulo,
+                "url": `${SITE_CONFIG.url}/niveles/${nivel.slug}/${u.slug}`,
+            })),
+        }
+    }));
+
     return (
         <div className="min-h-screen selection:bg-black/5 relative overflow-x-hidden hero-grid">
+            <JsonLd data={[
+                {
+                    "@type": "CollectionPage",
+                    "@id": `${SITE_CONFIG.url}/#collectionpage`,
+                    "url": SITE_CONFIG.url,
+                    "name": SITE_CONFIG.name,
+                    "description": SITE_CONFIG.description,
+                    "isPartOf": { "@id": `${SITE_CONFIG.url}/#website` },
+                    "about": { "@id": `${SITE_CONFIG.url}/#book` },
+                    "author": { "@id": `${SITE_CONFIG.url}/#author` },
+                    "breadcrumb": {
+                        "@type": "BreadcrumbList",
+                        "itemListElement": [
+                            { "@type": "ListItem", "position": 1, "name": "Inicio", "item": SITE_CONFIG.url }
+                        ]
+                    }
+                },
+                {
+                    "@type": "ItemList",
+                    "name": "Niveles del libro Estructuras de Datos",
+                    "description": "Estructura de niveles y unidades del libro Estructuras de Datos",
+                    "numberOfItems": nivelesDB.length,
+                    "itemListElement": courseItems,
+                }
+            ]} />
             {/* TECHNICAL BACKGROUND NOISE (Memory Addresses, etc.) */}
             <div className="absolute inset-0 pointer-events-none opacity-[0.05] select-none font-sans font-bold text-[10px] tracking-tight">
                 <div className="absolute top-20 left-10 noise-label rotate-12">0x7ffe-stack</div>

@@ -51,22 +51,39 @@ export default async function LevelPage({ params }: { params: Promise<{ level: s
 
     return (
         <div className="min-h-screen relative overflow-hidden bg-[#faf9f6]">
-            <JsonLd data={{
-                "@context": "https://schema.org",
-                "@type": "Course",
-                "name": level.titulo,
-                "description": level.descripcion,
-                "provider": {
-                    "@type": "Person",
-                    "name": SITE_CONFIG.author.name,
-                    "url": SITE_CONFIG.author.web
+            <JsonLd data={[
+                {
+                    "@type": "Course",
+                    "@id": `${SITE_CONFIG.url}/niveles/${level.slug}`,
+                    "name": level.titulo,
+                    "description": level.descripcion,
+                    "url": `${SITE_CONFIG.url}/niveles/${level.slug}`,
+                    "inLanguage": SITE_CONFIG.inLanguage,
+                    "provider": { "@id": `${SITE_CONFIG.url}/#author` },
+                    "isPartOf": { "@id": `${SITE_CONFIG.url}/#book` },
+                    "educationalLevel": SITE_CONFIG.book.educationalLevel,
+                    "teaches": SITE_CONFIG.book.topics.join(", "),
+                    "hasCourseInstance": {
+                        "@type": "CourseInstance",
+                        "courseMode": "online",
+                        "courseWorkload": "Self-paced",
+                        "instructor": { "@id": `${SITE_CONFIG.url}/#author` },
+                    },
+                    "hasPart": level.unidades.map((unidad) => ({
+                        "@type": "Course",
+                        "name": unidad.titulo,
+                        "url": `${SITE_CONFIG.url}/niveles/${level.slug}/${unidad.slug}`,
+                        "position": unidad.orden,
+                    })),
                 },
-                "hasCourseInstance": {
-                    "@type": "CourseInstance",
-                    "courseMode": "online",
-                    "courseWorkload": "Self-paced"
+                {
+                    "@type": "BreadcrumbList",
+                    "itemListElement": [
+                        { "@type": "ListItem", "position": 1, "name": "Inicio", "item": SITE_CONFIG.url },
+                        { "@type": "ListItem", "position": 2, "name": level.titulo, "item": `${SITE_CONFIG.url}/niveles/${level.slug}` },
+                    ]
                 }
-            }} />
+            ]} />
             <div className={`min-h-[35vh] ${tintColors[level.color as keyof typeof tintColors]} px-6 pt-24 pb-12 border-b border-black/5`}>
                 <div className="max-w-6xl mx-auto relative z-10">
                     <Breadcrumbs items={[
